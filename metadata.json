@@ -1,0 +1,6 @@
+{
+  "name": "Image DPI Optimizer",
+  "description": "Professional image DPI and file size optimizer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -13,8 +13,13 @@ import { SettingsPanel } from './components/SettingsPanel';
 import { ResultArea } from './components/ResultArea';
 import { ImageDetailModal } from './components/ImageDetailModal';
 import { SummaryBox } from './components/SummaryBox';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { Login } from './components/Login';
+import { LogOut } from 'lucide-react';
 
-export default function App() {
+function ImageOptimizerApp() {
+  const { isAuthenticated, isLoading, logout } = useAuth();
+
   const [files, setFiles] = useState<File[]>([]);
   const [dpi, setDpi] = useState<number>(() => Number(localStorage.getItem('dpi')) || 72);
   const [resize, setResize] = useState<number>(() => Number(localStorage.getItem('resize')) || 0); 
@@ -260,10 +265,40 @@ export default function App() {
     setIsProcessing(false);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50/50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-3 border-blue-600 border-t-transparent"></div>
+          <p className="text-sm font-medium text-gray-500">Yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+
   return (
     <div className="min-h-screen bg-white text-fog font-sans p-6 md:p-12">
       <div className="max-w-5xl mx-auto">
-        <header className="mb-16 text-center">
+        <div className="flex justify-between items-center mb-10 pb-4 border-b border-gray-100">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
+            <span className="h-1.5 w-1.5 rounded-full bg-blue-600"></span>
+            <span>Güvenli Oturum</span>
+          </div>
+          <button
+            onClick={logout}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:text-red-600 hover:bg-red-50 border border-gray-200 transition-colors cursor-pointer"
+            title="Oturumu Kapat"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            <span>Çıkış Yap</span>
+          </button>
+        </div>
+
+        <header className="mb-14 text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-malibu/20 text-fog text-sm font-medium mb-4">
                <span>Güvenli, Toplu İşleme</span>
             </div>
@@ -314,5 +349,13 @@ export default function App() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <ImageOptimizerApp />
+    </AuthProvider>
   );
 }

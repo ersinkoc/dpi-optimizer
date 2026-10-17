@@ -5,11 +5,17 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
       },
+    },
+    define: {
+      'import.meta.env.VITE_APP_PASSWORD': JSON.stringify(process.env.APP_PASSWORD || process.env.VITE_APP_PASSWORD || ''),
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
